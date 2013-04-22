@@ -10,13 +10,13 @@
 
 @interface BCMessage : BKObject
 
-@property (nonatomic, strong) NSString *messageID;
-@property (nonatomic, strong) NSString *subject;
+@property (nonatomic, copy) NSString *messageID;
+@property (nonatomic, copy) NSString *subject;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic, strong) NSString *content;
-@property (nonatomic, strong) NSString *creatorID;
-@property (nonatomic, strong) NSString *creatorName;
+@property (nonatomic, copy) NSString *content;
+@property (nonatomic, copy) NSString *creatorID;
+@property (nonatomic, copy) NSString *creatorName;
 @property (nonatomic, strong) NSMutableArray *comments;
 
 @end

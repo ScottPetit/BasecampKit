@@ -10,16 +10,16 @@
 
 @interface BCAttachment : BKObject
 
-@property (nonatomic, strong) NSString *key;
-@property (nonatomic, strong) NSString *name;
+@property (nonatomic, copy) NSString *key;
+@property (nonatomic, copy) NSString *name;
 @property (nonatomic) double byteSize;
-@property (nonatomic, strong) NSString *contentType;
+@property (nonatomic, copy) NSString *contentType;
 @property (nonatomic, strong) NSDate *createdDate;
-@property (nonatomic, strong) NSString *url;
-@property (nonatomic, strong) NSString *creatorID;
-@property (nonatomic, strong) NSString *creatorName;
-@property (nonatomic, strong) NSString *attachableID;
-@property (nonatomic, strong) NSString *attachableType;
-@property (nonatomic, strong) NSString *attachableURL;
+@property (nonatomic, copy) NSString *url;
+@property (nonatomic, copy) NSString *creatorID;
+@property (nonatomic, copy) NSString *creatorName;
+@property (nonatomic, copy) NSString *attachableID;
+@property (nonatomic, copy) NSString *attachableType;
+@property (nonatomic, copy) NSString *attachableURL;
 
 @end

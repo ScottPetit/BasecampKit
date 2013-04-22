@@ -12,19 +12,6 @@
 
 @implementation BCCalendarEvent
 
-@synthesize calendarEventID = _calendarEventID;
-@synthesize summary = _summary;
-@synthesize description = _description;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize isAllDay = _isAllDay;
-@synthesize startDate = _startDate;
-@synthesize endDate = _endDate;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize url = _url;
-@synthesize comments = _comments;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

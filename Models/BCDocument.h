@@ -10,13 +10,13 @@
 
 @interface BCDocument : BKObject
 
-@property (nonatomic, strong) NSString *documentID;
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *content;
+@property (nonatomic, copy) NSString *documentID;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *content;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic, strong) NSString *updaterID;
-@property (nonatomic, strong) NSString *updaterName;
+@property (nonatomic, copy) NSString *updaterID;
+@property (nonatomic, copy) NSString *updaterName;
 @property (nonatomic, strong) NSMutableArray *comments;
 
 @end

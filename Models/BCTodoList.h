@@ -10,16 +10,16 @@
 
 @interface BCTodoList : BKObject
 
-@property (nonatomic, strong) NSString *todoListID;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *description;
+@property (nonatomic, copy) NSString *todoListID;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *description;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *lastUpdated;
-@property (nonatomic, strong) NSString *url;
-@property (nonatomic) int position;
+@property (nonatomic, copy) NSString *url;
+@property (nonatomic) NSInteger position;
 @property (nonatomic) BOOL completed;
 
-@property (nonatomic, strong) NSString *projectID;
-@property (nonatomic) int assignedTodosCount;
+@property (nonatomic, copy) NSString *projectID;
+@property (nonatomic) NSInteger assignedTodosCount;
 
 @end

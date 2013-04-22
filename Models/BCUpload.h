@@ -10,18 +10,18 @@
 
 @interface BCUpload : BKObject
 
-@property (nonatomic, strong) NSString *uploadID;
+@property (nonatomic, copy) NSString *uploadID;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic, strong) NSString *content;
-@property (nonatomic, strong) NSString *attachmentKey;
-@property (nonatomic, strong) NSString *attachmentName;
+@property (nonatomic, copy) NSString *content;
+@property (nonatomic, copy) NSString *attachmentKey;
+@property (nonatomic, copy) NSString *attachmentName;
 @property (nonatomic) double byteSize;
-@property (nonatomic, strong) NSString *contentType;
+@property (nonatomic, copy) NSString *contentType;
 @property (nonatomic, strong) NSDate *attachmentCreatedDate;
-@property (nonatomic, strong) NSString *url;
-@property (nonatomic, strong) NSString *creatorID;
-@property (nonatomic, strong) NSString *creatorName;
+@property (nonatomic, copy) NSString *url;
+@property (nonatomic, copy) NSString *creatorID;
+@property (nonatomic, copy) NSString *creatorName;
 @property (nonatomic, strong) NSMutableArray *comments;
 
 @end

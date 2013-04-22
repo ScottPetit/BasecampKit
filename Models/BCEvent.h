@@ -10,17 +10,17 @@
 
 @interface BCEvent : BKObject
 
-@property (nonatomic, strong) NSString *eventID;
-@property (nonatomic, strong) NSString *creatorID;
-@property (nonatomic, strong) NSString *creatorName;
-@property (nonatomic, strong) NSString *summary;
-@property (nonatomic, strong) NSString *url;
+@property (nonatomic, copy) NSString *eventID;
+@property (nonatomic, copy) NSString *creatorID;
+@property (nonatomic, copy) NSString *creatorName;
+@property (nonatomic, copy) NSString *summary;
+@property (nonatomic, copy) NSString *url;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic, strong) NSString *action;
-@property (nonatomic, strong) NSString *task;
-@property (nonatomic, strong) NSString *typeID;
+@property (nonatomic, copy) NSString *action;
+@property (nonatomic, copy) NSString *task;
+@property (nonatomic, copy) NSString *typeID;
 @property (nonatomic, strong) UIImage *image;
-@property (nonatomic, strong) NSString *creatorImageURL;
+@property (nonatomic, copy) NSString *creatorImageURL;
 
 @end

@@ -12,17 +12,6 @@
 
 @implementation BCTodoList
 
-@synthesize todoListID = _todoListID;
-@synthesize name = _name;
-@synthesize description = _description;
-@synthesize createdDate = _createdDate;
-@synthesize lastUpdated = _lastUpdated;
-@synthesize url = _url;
-@synthesize position = _position;
-@synthesize completed = _completed;
-@synthesize projectID = _projectID;
-@synthesize assignedTodosCount = _assignedTodosCount;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];
@@ -36,11 +25,15 @@
         self.position = [[dictionary objectForKey:@"position"] intValue];
         self.completed = [[dictionary objectForKey:@"completed"] boolValue];
                 
-        if ([dictionary objectForKey:@"description"] != [NSNull null]) 
+        if ([dictionary objectForKey:@"description"] != [NSNull null])
+        {
             self.description = [dictionary objectForKey:@"description"];
+        }
         
         if ([dictionary objectForKey:@"assigned_todos"])
+        {
             self.assignedTodosCount = [[dictionary objectForKey:@"assigned_todos"] count];
+        }
     }
     
     return self;

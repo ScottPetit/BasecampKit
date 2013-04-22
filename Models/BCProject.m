@@ -11,18 +11,6 @@
 
 @implementation BCProject
 
-@synthesize projectID = _projectID;
-@synthesize name = _name;
-@synthesize description = _description;
-@synthesize lastUpdated = _lastUpdated;
-@synthesize url = _url;
-@synthesize isArchived = _isArchived;
-@synthesize attachmentsCount = _attachmentsCount;
-@synthesize calendarEventsCount = _calendarEventsCount;
-@synthesize documentsCount = _documentsCount;
-@synthesize todoListsCount = _todoListsCount;
-@synthesize topicsCount = _topicsCount;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

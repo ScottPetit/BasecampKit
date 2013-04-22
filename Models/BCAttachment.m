@@ -11,18 +11,6 @@
 
 @implementation BCAttachment
 
-@synthesize key = _key;
-@synthesize name = _name;
-@synthesize byteSize = _byteSize;
-@synthesize contentType = _contentType;
-@synthesize createdDate = _createdDate;
-@synthesize url = _url;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize attachableID = _attachableID;
-@synthesize attachableType = _attachableType;
-@synthesize attachableURL = _attachableURL;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

@@ -12,15 +12,6 @@
 
 @implementation BCDocument
 
-@synthesize documentID = _documentID;
-@synthesize title = _title;
-@synthesize content = _content;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize updaterID = _updaterID;
-@synthesize updaterName = _updaterName;
-@synthesize comments = _comments;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];
@@ -48,7 +39,9 @@
 - (BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[BCDocument class]])
+    {
         return NO;
+    }
     
     BCDocument *otherDocument = (BCDocument *) object;
     return [otherDocument.documentID isEqualToString:self.documentID];

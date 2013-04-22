@@ -12,25 +12,6 @@
 
 @implementation BCTodo
 
-@synthesize todoID = _todoID;
-@synthesize todoListID = _todoListID;
-@synthesize position = _position;
-@synthesize content = _content;
-@synthesize isCompleted = _isCompleted;
-@synthesize completedDate = _completedDate;
-@synthesize dueDate = _dueDate;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize commentsCount = _commentsCount;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize assigneeID = _assigneeID;
-@synthesize assigneeType = _assigneeType;
-@synthesize assigneeName = _assigneeName;
-@synthesize completerID = _completerID;
-@synthesize completerName = _completerName;
-@synthesize comments = _comments;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

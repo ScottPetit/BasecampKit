@@ -12,19 +12,6 @@
 
 @implementation BCEvent
 
-@synthesize eventID = _eventID;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize summary = _summary;
-@synthesize url = _url;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize action = _action;
-@synthesize task = _task;
-@synthesize typeID = _typeID;
-@synthesize image = _image;
-@synthesize creatorImageURL = _creatorImageURL;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];
@@ -38,7 +25,6 @@
         self.createdDate = [NSDate dateFromString:[dictionary objectForKey:@"created_at"]];
         self.updatedDate = [NSDate dateFromString:[dictionary objectForKey:@"updated_at"]];
     }
-    
     return self;
 }
 

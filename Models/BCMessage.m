@@ -12,15 +12,6 @@
 
 @implementation BCMessage
 
-@synthesize messageID = _messageID;
-@synthesize subject = _subject;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize content = _content;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize comments = _comments;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

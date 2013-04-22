@@ -10,12 +10,12 @@
 
 @interface BCComment : BKObject
 
-@property (nonatomic, strong) NSString *commentID;
-@property (nonatomic, strong) NSString *content;
+@property (nonatomic, copy) NSString *commentID;
+@property (nonatomic, copy) NSString *content;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic, strong) NSString *creatorID;
-@property (nonatomic, strong) NSString *creatorName;
-@property (nonatomic, strong) NSString *creatorImageURL;
+@property (nonatomic, copy) NSString *creatorID;
+@property (nonatomic, copy) NSString *creatorName;
+@property (nonatomic, copy) NSString *creatorImageURL;
 
 @end

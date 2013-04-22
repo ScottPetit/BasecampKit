@@ -10,16 +10,16 @@
 
 @interface BCProject : BKObject
 
-@property (nonatomic, strong) NSString *projectID;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *description;
+@property (nonatomic, copy) NSString *projectID;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *description;
 @property (nonatomic, strong) NSDate *lastUpdated;
-@property (nonatomic, strong) NSString *url;
+@property (nonatomic, copy) NSString *url;
 @property (nonatomic) BOOL isArchived;
-@property (nonatomic) int attachmentsCount;
-@property (nonatomic) int calendarEventsCount;
-@property (nonatomic) int documentsCount;
-@property (nonatomic) int todoListsCount;
-@property (nonatomic) int topicsCount;
+@property (nonatomic) NSInteger attachmentsCount;
+@property (nonatomic) NSInteger calendarEventsCount;
+@property (nonatomic) NSInteger documentsCount;
+@property (nonatomic) NSInteger todoListsCount;
+@property (nonatomic) NSInteger topicsCount;
 
 @end

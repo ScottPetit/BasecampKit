@@ -12,14 +12,6 @@
 
 @implementation BCComment
 
-@synthesize commentID = _commentID;
-@synthesize content = _content;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize creatorImageURL = _creatorImageURL;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

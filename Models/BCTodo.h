@@ -10,23 +10,23 @@
 
 @interface BCTodo : BKObject
 
-@property (nonatomic, strong) NSString *todoID;
-@property (nonatomic, strong) NSString *todoListID;
-@property (nonatomic) int position;
-@property (nonatomic, strong) NSString *content;
+@property (nonatomic, copy) NSString *todoID;
+@property (nonatomic, copy) NSString *todoListID;
+@property (nonatomic) NSInteger position;
+@property (nonatomic, copy) NSString *content;
 @property (nonatomic) BOOL isCompleted;
 @property (nonatomic, strong) NSDate *completedDate;
 @property (nonatomic, strong) NSDate *dueDate;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic) int commentsCount;
-@property (nonatomic, strong) NSString *creatorID;
-@property (nonatomic, strong) NSString *creatorName;
-@property (nonatomic, strong) NSString *assigneeID;
-@property (nonatomic, strong) NSString *assigneeType;
-@property (nonatomic, strong) NSString *assigneeName;
-@property (nonatomic, strong) NSString *completerID;
-@property (nonatomic, strong) NSString *completerName;
+@property (nonatomic) NSInteger commentsCount;
+@property (nonatomic, copy) NSString *creatorID;
+@property (nonatomic, copy) NSString *creatorName;
+@property (nonatomic, copy) NSString *assigneeID;
+@property (nonatomic, copy) NSString *assigneeType;
+@property (nonatomic, copy) NSString *assigneeName;
+@property (nonatomic, copy) NSString *completerID;
+@property (nonatomic, copy) NSString *completerName;
 @property (nonatomic, strong) NSMutableArray *comments;
 
 

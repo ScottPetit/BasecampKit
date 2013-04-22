@@ -18,16 +18,16 @@ typedef NS_ENUM(NSInteger, BKTopicType) {
 
 @interface BCTopic : BKObject
 
-@property (nonatomic, strong) NSString *topicID;
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *excerpt;
+@property (nonatomic, copy) NSString *topicID;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSString *excerpt;
 @property (nonatomic, strong) NSDate *createdDate;
 @property (nonatomic, strong) NSDate *updatedDate;
-@property (nonatomic) int attachmentsCount;
-@property (nonatomic, strong) NSString *lastUpdaterID;
-@property (nonatomic, strong) NSString *lastUpdaterName;
-@property (nonatomic, strong) NSString *topicableID;
+@property (nonatomic) NSInteger attachmentsCount;
+@property (nonatomic, copy) NSString *lastUpdaterID;
+@property (nonatomic, copy) NSString *lastUpdaterName;
+@property (nonatomic, copy) NSString *topicableID;
 @property (nonatomic) BKTopicType topicType;
-@property (nonatomic, strong) NSString *topicableURL;
+@property (nonatomic, copy) NSString *topicableURL;
 
 @end

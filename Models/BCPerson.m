@@ -11,15 +11,6 @@
 
 @implementation BCPerson
 
-@synthesize avatarURL = _avatarURL;
-@synthesize createdDate = _createdDate;
-@synthesize emailAddress = _emailAddress;
-@synthesize personID = _personID;
-@synthesize name = _name;
-@synthesize lastUpdated = _lastUpdated;
-@synthesize assignedTodosCount = _assignedTodosCount;
-@synthesize eventsCount = _eventsCount;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

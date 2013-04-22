@@ -10,14 +10,14 @@
 
 @interface BCPerson : BKObject
 
-@property (nonatomic, strong) NSString *avatarURL;
+@property (nonatomic, copy) NSString *avatarURL;
 @property (nonatomic, strong) NSDate *createdDate;
-@property (nonatomic, strong) NSString *emailAddress;
-@property (nonatomic, strong) NSString *personID;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *lastUpdated;
-@property (nonatomic) int assignedTodosCount;
-@property (nonatomic) int eventsCount;
+@property (nonatomic, copy) NSString *emailAddress;
+@property (nonatomic, copy) NSString *personID;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *lastUpdated;
+@property (nonatomic) NSInteger assignedTodosCount;
+@property (nonatomic) NSInteger eventsCount;
 
 - (id)initPersonWithId:(NSString *)personId;
 

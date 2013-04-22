@@ -11,18 +11,6 @@
 
 @implementation BCTopic
 
-@synthesize topicID = _topicID;
-@synthesize title = _title;
-@synthesize excerpt = _excerpt;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize attachmentsCount = _attachmentsCount;
-@synthesize lastUpdaterID = _lastUpdaterID;
-@synthesize lastUpdaterName = _lastUpdaterName;
-@synthesize topicableID = _topicableID;
-@synthesize topicType = _topicType;
-@synthesize topicableURL = _topicableURL;
-
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
     self = [super initWithDictionary:dictionary];

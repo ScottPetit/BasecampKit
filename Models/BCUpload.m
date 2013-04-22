@@ -12,20 +12,6 @@
 
 @implementation BCUpload
 
-@synthesize uploadID = _uploadID;
-@synthesize createdDate = _createdDate;
-@synthesize updatedDate = _updatedDate;
-@synthesize content = _content;
-@synthesize attachmentKey = _attachmentKey;
-@synthesize attachmentName = _attachmentName;
-@synthesize byteSize = _byteSize;
-@synthesize contentType = _contentType;
-@synthesize attachmentCreatedDate = _attachmentCreatedDate;
-@synthesize url = _url;
-@synthesize creatorID = _creatorID;
-@synthesize creatorName = _creatorName;
-@synthesize comments = _comments;
-
 - (id)initWithDictionary:(NSMutableDictionary *) dictionary
 {
     self = [super initWithDictionary:dictionary];
