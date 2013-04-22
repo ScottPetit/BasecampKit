@@ -7,18 +7,18 @@
 //
 
 #import "Basecamp.h"
-#import "BCProject.h"
-#import "BCPerson.h"
-#import "BCTodoList.h"
-#import "BCTodo.h"
-#import "BCEvent.h"
-#import "BCDocument.h"
-#import "BCCalendarEvent.h"
-#import "BCUpload.h"
-#import "BCAttachment.h"
-#import "BCComment.h"
-#import "BCTopic.h"
-#import "BCMessage.h"
+#import "BKProject.h"
+#import "BKPerson.h"
+#import "BKTodoList.h"
+#import "BKTodo.h"
+#import "BKEvent.h"
+#import "BKDocument.h"
+#import "BKCalendarEvent.h"
+#import "BKUpload.h"
+#import "BKAttachment.h"
+#import "BKComment.h"
+#import "BKTopic.h"
+#import "BKMessage.h"
 #import "NSString+BasecampKit.h"
 
 #define kBasecampBaseURL @"https://basecamp.com/"
@@ -66,7 +66,7 @@
               
               for (NSMutableDictionary *dictionary in responseObject)
               {
-                  BCProject *project = [BCProject objectWithDictionary:dictionary];
+                  BKProject *project = [BKProject objectWithDictionary:dictionary];
                   [projects addObject:project];
               }
               
@@ -90,7 +90,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCProject *project = [BCProject objectWithDictionary:responseObject];
+              BKProject *project = [BKProject objectWithDictionary:responseObject];
               
               if (success)
               {
@@ -114,7 +114,7 @@
               
               for (NSMutableDictionary *listsDictionary in responseObject) 
               {
-                  BCTodoList *list = [BCTodoList objectWithDictionary:listsDictionary];
+                  BKTodoList *list = [BKTodoList objectWithDictionary:listsDictionary];
                   [lists addObject:list];
               }
               
@@ -139,7 +139,7 @@
               
               for (NSMutableDictionary *dictionary in responseObject) 
               {
-                  BCTodoList *todoList = [BCTodoList objectWithDictionary:dictionary];
+                  BKTodoList *todoList = [BKTodoList objectWithDictionary:dictionary];
                   [lists addObject:todoList];
               }
               
@@ -164,7 +164,7 @@
               
               for (NSMutableDictionary *todosDict in todosArray) 
               {
-                  BCTodo *todo = [BCTodo objectWithDictionary:todosDict];
+                  BKTodo *todo = [BKTodo objectWithDictionary:todosDict];
                   [todos addObject:todo];
               }
               
@@ -186,7 +186,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCTodo *todo = [BCTodo objectWithDictionary:responseObject];
+              BKTodo *todo = [BKTodo objectWithDictionary:responseObject];
               
               if (success)
               {
@@ -210,7 +210,7 @@
               
               for (NSMutableDictionary *documentsDict in responseObject) 
               {
-                  BCDocument *document = [BCDocument objectWithDictionary:documentsDict];
+                  BKDocument *document = [BKDocument objectWithDictionary:documentsDict];
                   [documents addObject:document];
               }
               
@@ -230,7 +230,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCDocument *document = [BCDocument objectWithDictionary:responseObject];
+              BKDocument *document = [BKDocument objectWithDictionary:responseObject];
             
               if (success)
               {
@@ -254,7 +254,7 @@
               
               for (NSMutableDictionary *calendarEventsDict in responseObject) 
               {
-                  BCCalendarEvent *event = [BCCalendarEvent objectWithDictionary:calendarEventsDict];
+                  BKCalendarEvent *event = [BKCalendarEvent objectWithDictionary:calendarEventsDict];
                   [calendarEvents addObject:event];
               }
               
@@ -287,7 +287,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCCalendarEvent *calendarEvent = [BCCalendarEvent objectWithDictionary:responseObject];
+              BKCalendarEvent *calendarEvent = [BKCalendarEvent objectWithDictionary:responseObject];
               
               if (success)
               {
@@ -308,7 +308,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCPerson *person = [BCPerson objectWithDictionary:responseObject];
+              BKPerson *person = [BKPerson objectWithDictionary:responseObject];
 
               if (success)
               {
@@ -334,7 +334,7 @@
               
               for (NSMutableDictionary *dictionary in jsonArray) 
               {
-                  BCEvent *event = [BCEvent objectWithDictionary:dictionary];
+                  BKEvent *event = [BKEvent objectWithDictionary:dictionary];
                   [events addObject:event];
               }
               
@@ -362,7 +362,7 @@
               
               for (NSMutableDictionary *dictionary in jsonArray) 
               {
-                  BCAttachment *attachment = [BCAttachment objectWithDictionary:dictionary];
+                  BKAttachment *attachment = [BKAttachment objectWithDictionary:dictionary];
                   [attachments addObject:attachment];
               }
               
@@ -382,7 +382,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCUpload *upload = [BCUpload objectWithDictionary:responseObject];
+              BKUpload *upload = [BKUpload objectWithDictionary:responseObject];
               
               if (success)
               {
@@ -395,7 +395,7 @@
 
 #pragma mark - Topics
 
-- (void)getTopicsForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)getTopicsForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/topics.json", self.accountID, project.projectID];
     [self getPath:path 
@@ -406,7 +406,7 @@
               
               for (NSMutableDictionary *topicsDict in responseObject) 
               {
-                  BCTopic *topic = [BCTopic objectWithDictionary:topicsDict];
+                  BKTopic *topic = [BKTopic objectWithDictionary:topicsDict];
                   [topics addObject:topic];
               }
               
@@ -421,14 +421,14 @@
 
 #pragma mark - Messages
 
-- (void)getMessage:(NSString *)messageID forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)getMessage:(NSString *)messageID forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/messages/%@.json", self.accountID, project.projectID, messageID];
     [self getPath:path 
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              BCMessage *message = [BCMessage objectWithDictionary:responseObject];
+              BKMessage *message = [BKMessage objectWithDictionary:responseObject];
               
               if (success)
               {
@@ -451,7 +451,7 @@
         parameters:parameters 
            success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               BCProject *project = [BCProject objectWithDictionary:responseObject];
+               BKProject *project = [BKProject objectWithDictionary:responseObject];
                
                if (success)
                {
@@ -463,7 +463,7 @@
 
 #pragma mark - Todo Lists
 
-- (void)createTodoListForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)createTodoListForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists.json", self.accountID, project.projectID];
     
@@ -471,7 +471,7 @@
         parameters:parameters 
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                
-               BCTodoList *list = [BCTodoList objectWithDictionary:responseObject];
+               BKTodoList *list = [BKTodoList objectWithDictionary:responseObject];
                
                if (success)
                {
@@ -482,7 +482,7 @@
            }];
 }
 
-- (void)updateTodoList:(BCTodoList *)list forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)updateTodoList:(BKTodoList *)list forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists/%@.json", self.accountID, project.projectID, list.todoListID];
     
@@ -490,7 +490,7 @@
        parameters:parameters 
           success:^(AFHTTPRequestOperation *operation, id responseObject){
               
-              BCTodoList *list = [BCTodoList objectWithDictionary:responseObject];
+              BKTodoList *list = [BKTodoList objectWithDictionary:responseObject];
               
               if (success)
               {
@@ -503,7 +503,7 @@
 
 #pragma mark - Todos
 
-- (void)createTodoForTodoList:(BCTodoList *)todoList forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)createTodoForTodoList:(BKTodoList *)todoList forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists/%@/todos.json", self.accountID, project.projectID, todoList.todoListID];
     
@@ -511,7 +511,7 @@
         parameters:parameters 
            success:^(AFHTTPRequestOperation *operation, id responseObject) {
                
-               BCTodo *todo = [BCTodo objectWithDictionary:responseObject];
+               BKTodo *todo = [BKTodo objectWithDictionary:responseObject];
                
                if (success)
                {
@@ -523,7 +523,7 @@
            }];
 }
 
-- (void)updateTodo:(BCTodo *)todo forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)updateTodo:(BKTodo *)todo forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {    
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todos/%@.json", self.accountID, project.projectID, todo.todoID];
     
@@ -531,7 +531,7 @@
         parameters:parameters 
            success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               BCTodo *todo = [BCTodo objectWithDictionary:responseObject];
+               BKTodo *todo = [BKTodo objectWithDictionary:responseObject];
                
                if (success)
                {
@@ -544,14 +544,14 @@
 
 #pragma mark - Documents
 
-- (void)createDocumentForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)createDocumentForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/documents.json", self.accountID, project.projectID];
     [self postPath:path 
         parameters:parameters 
            success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               BCDocument *document = [BCDocument objectWithDictionary:responseObject];
+               BKDocument *document = [BKDocument objectWithDictionary:responseObject];
                
                if (success)
                {
@@ -564,7 +564,7 @@
 
 #pragma mark - Calendar Events
 
-- (void)createCalendarEventForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)createCalendarEventForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
@@ -578,7 +578,7 @@
            }];
 }
 
-- (void)updateCalendarEvent:(BCCalendarEvent *)calendarEvent forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)updateCalendarEvent:(BKCalendarEvent *)calendarEvent forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
@@ -604,7 +604,7 @@
         parameters:parameters 
            success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               BCComment *comment = [BCComment objectWithDictionary:responseObject];
+               BKComment *comment = [BKComment objectWithDictionary:responseObject];
                
                if (success)
                {
@@ -618,9 +618,8 @@
 
 #pragma mark - Messages
 
-- (void)createMessageForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
+- (void)createMessageForProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
-    NSLog(@"Creating a Message");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/messages.json", self.accountID, project.projectID];
@@ -629,7 +628,7 @@
         parameters:parameters
            success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               BCMessage *message = [BCMessage objectWithDictionary:responseObject];
+               BKMessage *message = [BKMessage objectWithDictionary:responseObject];
                
                if (success)
                {

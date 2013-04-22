@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCUpload.h"
-#import "BCComment.h"
+#import "BKUpload.h"
+#import "BKComment.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCUpload
+@implementation BKUpload
 
 - (id)initWithDictionary:(NSMutableDictionary *) dictionary
 {
@@ -34,7 +34,7 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
+            BKComment *comment = [BKComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
     }

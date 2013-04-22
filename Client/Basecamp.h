@@ -8,15 +8,15 @@
 
 #import "AFNetworking.h"
 
-@class BCProject;
-@class BCPerson;
-@class BCDocument;
-@class BCTodoList;
-@class BCTodo;
-@class BCCalendarEvent;
-@class BCUpload;
-@class BCComment;
-@class BCMessage;
+@class BKProject;
+@class BKPerson;
+@class BKDocument;
+@class BKTodoList;
+@class BKTodo;
+@class BKCalendarEvent;
+@class BKUpload;
+@class BKComment;
+@class BKMessage;
 
 typedef void (^BKHTTPClientSuccess)(AFJSONRequestOperation *operation, id responseObject);
 typedef void (^BKHTTPClientFailure)(AFJSONRequestOperation *operation, NSError *error);
@@ -26,7 +26,6 @@ typedef void (^BKHTTPClientFailure)(AFJSONRequestOperation *operation, NSError *
 + (instancetype)sharedCampWithAccountId:(NSString *)accountId;
 
 @property (nonatomic, readonly) NSString *accountID;
-@property (nonatomic, strong) BCPerson *me;
 
 //Projects
 - (void)getProjectsWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
@@ -60,10 +59,10 @@ typedef void (^BKHTTPClientFailure)(AFJSONRequestOperation *operation, NSError *
 - (void)getUploadWithID:(NSString *)uploadID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Topics
-- (void)getTopicsForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getTopicsForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Messages
-- (void)getMessage:(NSString *)messageID forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getMessage:(NSString *)messageID forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 #pragma mark - Creation/Updating
 
@@ -71,24 +70,24 @@ typedef void (^BKHTTPClientFailure)(AFJSONRequestOperation *operation, NSError *
 - (void)createProjectWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //TodoLists
-- (void)createTodoListForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
-- (void)updateTodoList:(BCTodoList *)list forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)createTodoListForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)updateTodoList:(BKTodoList *)list forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Todos
-- (void)createTodoForTodoList:(BCTodoList *)todoList forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
-- (void)updateTodo:(BCTodo *)todo forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)createTodoForTodoList:(BKTodoList *)todoList forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)updateTodo:(BKTodo *)todo forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Documents
-- (void)createDocumentForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)createDocumentForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Calendar Events
-- (void)createCalendarEventForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
-- (void)updateCalendarEvent:(BCCalendarEvent *)calendarEvent forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)createCalendarEventForProject:(BKProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)updateCalendarEvent:(BKCalendarEvent *)calendarEvent forProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Comments
 - (void)createCommentForSection:(NSString *)section withIdentifier:(NSString *)sectionID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Messages
-- (void)createMessageForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)createMessageForProject:(BKProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 @end

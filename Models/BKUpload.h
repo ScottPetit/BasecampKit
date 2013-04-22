@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCUpload : BKObject
+@interface BKUpload : BKObject
 
 @property (nonatomic, copy) NSString *uploadID;
 @property (nonatomic, strong) NSDate *createdDate;

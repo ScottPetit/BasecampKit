@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCPerson.h"
+#import "BKPerson.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCPerson
+@implementation BKPerson
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -40,12 +40,12 @@
 
 - (BOOL)isEqual:(id)object
 {
-    if (![object isKindOfClass:[BCPerson class]])
+    if (![object isKindOfClass:[BKPerson class]])
     {
         return NO;
     }
     
-    BCPerson *otherPerson = (BCPerson *) object;
+    BKPerson *otherPerson = (BKPerson *) object;
     return [otherPerson.personID isEqualToString:self.personID];
 }
 

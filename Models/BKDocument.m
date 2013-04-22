@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCDocument.h"
+#import "BKDocument.h"
 #import "NSDate+BasecampKit.h"
-#import "BCComment.h"
+#import "BKComment.h"
 
-@implementation BCDocument
+@implementation BKDocument
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -29,7 +29,7 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
+            BKComment *comment = [BKComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
     }
@@ -38,12 +38,12 @@
 
 - (BOOL)isEqual:(id)object
 {
-    if (![object isKindOfClass:[BCDocument class]])
+    if (![object isKindOfClass:[BKDocument class]])
     {
         return NO;
     }
     
-    BCDocument *otherDocument = (BCDocument *) object;
+    BKDocument *otherDocument = (BKDocument *) object;
     return [otherDocument.documentID isEqualToString:self.documentID];
 }
 

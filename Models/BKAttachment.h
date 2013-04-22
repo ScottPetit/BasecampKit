@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCAttachment : BKObject
+@interface BKAttachment : BKObject
 
 @property (nonatomic, copy) NSString *key;
 @property (nonatomic, copy) NSString *name;

@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, BKTopicType) {
     BKTopicTypeCalendarEvent,
 };
 
-@interface BCTopic : BKObject
+@interface BKTopic : BKObject
 
 @property (nonatomic, copy) NSString *topicID;
 @property (nonatomic, copy) NSString *title;

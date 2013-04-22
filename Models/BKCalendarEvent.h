@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCCalendarEvent : BKObject
+@interface BKCalendarEvent : BKObject
 
 @property (nonatomic, copy) NSString *calendarEventID;
 @property (nonatomic, copy) NSString *summary;

@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCAttachment.h"
+#import "BKAttachment.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCAttachment
+@implementation BKAttachment
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {

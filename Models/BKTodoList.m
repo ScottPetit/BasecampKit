@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCTodoList.h"
+#import "BKTodoList.h"
 #import "Basecamp.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCTodoList
+@implementation BKTodoList
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -41,12 +41,12 @@
 
 - (BOOL) isEqual:(id)object
 {
-    if (![object isKindOfClass:[BCTodoList class]])
+    if (![object isKindOfClass:[BKTodoList class]])
     {
         return NO;
     }
     
-    BCTodoList *otherList = (BCTodoList *) object;
+    BKTodoList *otherList = (BKTodoList *) object;
     return [otherList.todoListID isEqualToString:self.todoListID];
 }
 

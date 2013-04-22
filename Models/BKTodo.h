@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCTodo : BKObject
+@interface BKTodo : BKObject
 
 @property (nonatomic, copy) NSString *todoID;
 @property (nonatomic, copy) NSString *todoListID;

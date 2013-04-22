@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCProject : BKObject
+@interface BKProject : BKObject
 
 @property (nonatomic, copy) NSString *projectID;
 @property (nonatomic, copy) NSString *name;

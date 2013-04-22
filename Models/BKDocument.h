@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCDocument : BKObject
+@interface BKDocument : BKObject
 
 @property (nonatomic, copy) NSString *documentID;
 @property (nonatomic, copy) NSString *title;

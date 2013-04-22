@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCPerson : BKObject
+@interface BKPerson : BKObject
 
 @property (nonatomic, copy) NSString *avatarURL;
 @property (nonatomic, strong) NSDate *createdDate;

@@ -8,7 +8,7 @@
 
 #import "BKObject.h"
 
-@interface BCEvent : BKObject
+@interface BKEvent : BKObject
 
 @property (nonatomic, copy) NSString *eventID;
 @property (nonatomic, copy) NSString *creatorID;

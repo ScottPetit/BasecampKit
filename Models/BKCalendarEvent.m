@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCCalendarEvent.h"
+#import "BKCalendarEvent.h"
 #import "NSDate+BasecampKit.h"
-#import "BCComment.h"
+#import "BKComment.h"
 
-@implementation BCCalendarEvent
+@implementation BKCalendarEvent
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -33,7 +33,7 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
+            BKComment *comment = [BKComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
                     

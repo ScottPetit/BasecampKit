@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCProject.h"
+#import "BKProject.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCProject
+@implementation BKProject
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -35,12 +35,12 @@
 
 - (BOOL) isEqual:(id)object
 {
-    if (![object isKindOfClass:[BCProject class]])
+    if (![object isKindOfClass:[BKProject class]])
     {
         return NO;
     }
     
-    BCProject *otherProject = (BCProject *) object;
+    BKProject *otherProject = (BKProject *) object;
     return [otherProject.projectID isEqualToString:self.projectID];
 }
 

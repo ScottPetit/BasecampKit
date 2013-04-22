@@ -6,10 +6,10 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCTopic.h"
+#import "BKTopic.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCTopic
+@implementation BKTopic
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {

@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCComment.h"
+#import "BKComment.h"
 #import "NSDate+BasecampKit.h"
 #import "NSString+HTML.h"
 
-@implementation BCComment
+@implementation BKComment
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {

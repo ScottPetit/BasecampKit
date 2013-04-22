@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCEvent.h"
+#import "BKEvent.h"
 #import "NSDate+BasecampKit.h"
 #import "NSString+HTML.h"
 
-@implementation BCEvent
+@implementation BKEvent
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {

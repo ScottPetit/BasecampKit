@@ -6,11 +6,11 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import "BCTodo.h"
-#import "BCComment.h"
+#import "BKTodo.h"
+#import "BKComment.h"
 #import "NSDate+BasecampKit.h"
 
-@implementation BCTodo
+@implementation BKTodo
 
 - (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -38,7 +38,7 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
+            BKComment *comment = [BKComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
     }
@@ -48,12 +48,12 @@
 
 - (BOOL)isEqual:(id)object
 {
-    if (![object isKindOfClass:[BCTodo class]])
+    if (![object isKindOfClass:[BKTodo class]])
     {
         return NO;
     }
     
-    BCTodo *otherTodo = (BCTodo *) object;
+    BKTodo *otherTodo = (BKTodo *) object;
     return [otherTodo.todoID isEqualToString:self.todoID];
 }
 
