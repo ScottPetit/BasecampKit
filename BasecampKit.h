@@ -12,22 +12,21 @@
 //Models
 
 #import "Basecamp.h"
-#import "BCAttachment.h"
-#import "BCCalendarEvent.h"
-#import "BCComment.h"
-#import "BCDocument.h"
-#import "BCEvent.h"
-#import "BCMessage.h"
-#import "BCPerson.h"
-#import "BCProject.h"
-#import "BCTodo.h"
-#import "BCTodoList.h"
-#import "BCTopic.h"
-#import "BCUpload.h"
+#import "BKAttachment.h"
+#import "BKCalendarEvent.h"
+#import "BKComment.h"
+#import "BKDocument.h"
+#import "BKEvent.h"
+#import "BKMessage.h"
+#import "BKPerson.h"
+#import "BKProject.h"
+#import "BKTodo.h"
+#import "BKTodoList.h"
+#import "BKTopic.h"
+#import "BKUpload.h"
 
 //Categories
 
-#import "NSAttributedString+BasecampKit.h"
 #import "NSDate+BasecampKit.h"
 #import "NSString+BasecampKit.h"
 
