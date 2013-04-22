@@ -46,6 +46,8 @@ static NSString * const BasecampBaseURL = @"https://basecamp.com/";
         [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
         [self setParameterEncoding:AFJSONParameterEncoding];
         [self setDefaultHeader:@"Content-Type" value:@"application/json; charset=utf-8"];
+#warning Per the BCX docs you should set this to your own header
+//        [self setDefaultHeader:@"User-Agent" value:@"Freshbooks (http://freshbooks.com)"];
     }
     return self;
 }
