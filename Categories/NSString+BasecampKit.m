@@ -10,7 +10,7 @@
 
 @implementation NSString (BasecampKit)
 
-+ (NSString*)urlEscapeString:(NSString *)unencodedString
++ (NSString *)urlEscapeString:(NSString *)unencodedString
 {
     CFStringRef originalStringRef = (__bridge_retained CFStringRef)unencodedString;
     NSString *s = (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(NULL,originalStringRef, NULL, NULL,kCFStringEncodingUTF8);
@@ -18,7 +18,7 @@
     return s;
 }
 
-+ (NSString*)addQueryStringToUrlString:(NSString *)urlString withDictionary:(NSDictionary *)dictionary
++ (NSString *)addQueryStringToUrlString:(NSString *)urlString withDictionary:(NSDictionary *)dictionary
 {
     NSMutableString *urlWithQuerystring = [[NSMutableString alloc] initWithString:urlString];
     

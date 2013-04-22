@@ -10,6 +10,6 @@
 
 @interface NSDate (BasecampKit)
 
-+ (NSDate *) dateFromString:(NSString *)string;
++ (NSDate *)dateFromString:(NSString *)string;
 
 @end

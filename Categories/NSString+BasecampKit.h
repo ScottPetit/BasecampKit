@@ -10,7 +10,7 @@
 
 @interface NSString (BasecampKit)
 
-+ (NSString*) urlEscapeString:(NSString *)unencodedString;
-+ (NSString*)addQueryStringToUrlString:(NSString *)urlString withDictionary:(NSDictionary *)dictionary;
++ (NSString *)urlEscapeString:(NSString *)unencodedString;
++ (NSString *)addQueryStringToUrlString:(NSString *)urlString withDictionary:(NSDictionary *)dictionary;
 
 @end

@@ -10,9 +10,9 @@
 
 @implementation NSDate (BasecampKit)
 
-+ (NSDate *) dateFromString:(NSString *)string
++ (NSDate *)dateFromString:(NSString *)string
 {
-    NSDate *date;
+    NSDate *date = nil;
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"];
