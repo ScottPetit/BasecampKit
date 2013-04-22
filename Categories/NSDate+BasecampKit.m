@@ -10,7 +10,7 @@
 
 @implementation NSDate (BasecampKit)
 
-+ (NSDate *)dateFromString:(NSString *)string
++ (instancetype)dateFromString:(NSString *)string
 {
     NSDate *date = nil;
     
