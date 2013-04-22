@@ -21,9 +21,9 @@
 @synthesize creatorName = _creatorName;
 @synthesize comments = _comments;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self) 
     {
         self.messageID = [[dictionary objectForKey:@"id"] stringValue];
@@ -38,7 +38,7 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [[BCComment alloc] initWithDictionary:commentsDictionary];
+            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
     }
@@ -47,7 +47,10 @@
 
 - (NSMutableArray *) comments
 {
-    if (!_comments) _comments = [[NSMutableArray alloc] init];
+    if (!_comments)
+    {
+        _comments = [[NSMutableArray alloc] init];
+    }
     return _comments;
 }
 

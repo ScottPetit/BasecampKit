@@ -21,9 +21,9 @@
 @synthesize updaterName = _updaterName;
 @synthesize comments = _comments;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self)
     {
         self.documentID = [dictionary objectForKey:@"id"];
@@ -38,14 +38,14 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [[BCComment alloc] initWithDictionary:commentsDictionary];
+            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
     }
     return self;
 }
 
-- (BOOL) isEqual:(id)object
+- (BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[BCDocument class]])
         return NO;
@@ -56,9 +56,12 @@
 
 #pragma mark - Lazy Instantiation
 
-- (NSMutableArray *) comments
+- (NSMutableArray *)comments
 {
-    if (!_comments) _comments = [[NSMutableArray alloc] init];
+    if (!_comments)
+    {
+        _comments = [[NSMutableArray alloc] init];
+    }
     return _comments;
 }
 

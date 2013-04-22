@@ -23,9 +23,9 @@
 @synthesize projectID = _projectID;
 @synthesize assignedTodosCount = _assignedTodosCount;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self) 
     {
         self.todoListID = [[dictionary objectForKey:@"id"] stringValue];
@@ -49,7 +49,9 @@
 - (BOOL) isEqual:(id)object
 {
     if (![object isKindOfClass:[BCTodoList class]])
+    {
         return NO;
+    }
     
     BCTodoList *otherList = (BCTodoList *) object;
     return [otherList.todoListID isEqualToString:self.todoListID];

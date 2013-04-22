@@ -22,6 +22,4 @@
 @property (nonatomic, strong) NSString *attachableType;
 @property (nonatomic, strong) NSString *attachableURL;
 
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
-
 @end

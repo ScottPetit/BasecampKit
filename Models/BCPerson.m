@@ -20,9 +20,9 @@
 @synthesize assignedTodosCount = _assignedTodosCount;
 @synthesize eventsCount = _eventsCount;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self) 
     {
         self.avatarURL = [dictionary objectForKey:@"avatar_url"];
@@ -33,25 +33,26 @@
         self.lastUpdated = [dictionary objectForKey:@"updated_at"];
         self.assignedTodosCount = [[[dictionary objectForKey:@"assigned_todos"] objectForKey:@"count"] intValue];
         self.eventsCount = [[[dictionary objectForKey:@"events"] objectForKey:@"count"] intValue];
-    }
-    
+    }    
     return self;
 }
 
-- (id) initPersonWithID:(NSString *)personID
+- (id)initPersonWithId:(NSString *)personId
 {
     self = [super init];
     if (self) 
     {
-        self.personID = personID;
+        self.personID = personId;
     }
     return self;
 }
 
-- (BOOL) isEqual:(id)object
+- (BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[BCPerson class]])
+    {
         return NO;
+    }
     
     BCPerson *otherPerson = (BCPerson *) object;
     return [otherPerson.personID isEqualToString:self.personID];

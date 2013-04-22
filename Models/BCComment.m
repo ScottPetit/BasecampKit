@@ -20,9 +20,9 @@
 @synthesize creatorName = _creatorName;
 @synthesize creatorImageURL = _creatorImageURL;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self)
     {
         self.commentID = [dictionary objectForKey:@"id"];

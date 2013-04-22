@@ -23,9 +23,9 @@
 @synthesize attachableType = _attachableType;
 @synthesize attachableURL = _attachableURL;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self)
     {
         self.key = [dictionary objectForKey:@"key"];

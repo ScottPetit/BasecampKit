@@ -19,4 +19,6 @@
 @property (nonatomic) int assignedTodosCount;
 @property (nonatomic) int eventsCount;
 
+- (id)initPersonWithId:(NSString *)personId;
+
 @end

@@ -10,4 +10,19 @@
 
 @implementation BKObject
 
++ (instancetype)objectWithDictionary:(NSDictionary *)dictionary
+{
+    return [[self alloc] initWithDictionary:dictionary];
+}
+
+- (id)initWithDictionary:(NSDictionary *)dictionary
+{
+    self = [super init];
+    if (self)
+    {
+        //no-op
+    }
+    return self;
+}
+
 @end

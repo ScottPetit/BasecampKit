@@ -23,9 +23,9 @@
 @synthesize topicType = _topicType;
 @synthesize topicableURL = _topicableURL;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self)
     {
         self.topicID = [[dictionary objectForKey:@"id"] stringValue];

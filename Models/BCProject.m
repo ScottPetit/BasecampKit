@@ -23,9 +23,9 @@
 @synthesize todoListsCount = _todoListsCount;
 @synthesize topicsCount = _topicsCount;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self) 
     {
         self.projectID = [[dictionary objectForKey:@"id"] stringValue];
@@ -48,7 +48,9 @@
 - (BOOL) isEqual:(id)object
 {
     if (![object isKindOfClass:[BCProject class]])
+    {
         return NO;
+    }
     
     BCProject *otherProject = (BCProject *) object;
     return [otherProject.projectID isEqualToString:self.projectID];

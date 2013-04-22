@@ -25,9 +25,9 @@
 @synthesize image = _image;
 @synthesize creatorImageURL = _creatorImageURL;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self) 
     {
         self.eventID = [[dictionary objectForKey:@"id"] stringValue];

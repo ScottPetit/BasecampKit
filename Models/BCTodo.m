@@ -31,9 +31,9 @@
 @synthesize completerName = _completerName;
 @synthesize comments = _comments;
 
-- (id) initWithDictionary:(NSMutableDictionary *)dictionary
+- (id)initWithDictionary:(NSMutableDictionary *)dictionary
 {
-    self = [super init];
+    self = [super initWithDictionary:dictionary];
     if (self)
     {
         self.todoID = [[dictionary objectForKey:@"id"] stringValue];
@@ -57,7 +57,7 @@
         
         for (id commentsDictionary in commentsArray) 
         {
-            BCComment *comment = [[BCComment alloc] initWithDictionary:commentsDictionary];
+            BCComment *comment = [BCComment objectWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
     }
@@ -65,10 +65,12 @@
     return self;
 }
 
-- (BOOL) isEqual:(id)object
+- (BOOL)isEqual:(id)object
 {
     if (![object isKindOfClass:[BCTodo class]])
+    {
         return NO;
+    }
     
     BCTodo *otherTodo = (BCTodo *) object;
     return [otherTodo.todoID isEqualToString:self.todoID];
