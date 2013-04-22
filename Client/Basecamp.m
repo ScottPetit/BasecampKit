@@ -19,43 +19,27 @@
 #import "BCComment.h"
 #import "BCTopic.h"
 #import "BCMessage.h"
-#import "JSONKit.h"
 #import "NSString+BasecampKit.h"
 
 #define kBasecampBaseURL @"https://basecamp.com/"
 #define kBasecampAuthorizationURL @"https://launchpad.37signals.com/authorization/"
 
-@interface Basecamp()
-
-@end
-
 @implementation Basecamp
-
-@synthesize delegate = _delegate;
-@synthesize isAuthorized = _isAuthorized;
-@synthesize isExpired = _isExpired;
-@synthesize accessToken = _accessToken;
-@synthesize expirationDate = _expirationDate;
-@synthesize refreshToken = _refreshToken;
-@synthesize accountID = _accountID;
-@synthesize account = _account;
-@synthesize people = _people;
-@synthesize me = _me;
 
 #pragma mark - Init
 
-+ (id) sharedCamp
++ (instancetype)sharedCampWithAccountId:(NSString *)accountId
 {
     static Basecamp *__sharedCamp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __sharedCamp = [[Basecamp alloc] initWithBaseURL:[NSURL URLWithString:kBasecampBaseURL]];
+        __sharedCamp = [[Basecamp alloc] initWithBaseURL:[NSURL URLWithString:kBasecampBaseURL] accountId:accountId];
     });
     
     return __sharedCamp;
 }
 
-- (id) initWithBaseURL:(NSURL *)url
+- (id)initWithBaseURL:(NSURL *)url accountId:(NSString *)accountId
 {
     self = [super initWithBaseURL:url];
     if (self) 
@@ -64,150 +48,54 @@
         [self setParameterEncoding:AFJSONParameterEncoding];
         [self setDefaultHeader:@"Content-Type" value:@"application/json; charset=utf-8"];
         [self setDefaultHeader:@"User-Agent" value:@"Bonfire (petit.scott@gmail.com)"];
+        _accountID = accountId;
     }
     return self;
 }
 
-#pragma mark - Authorization
-
-- (NSURL *) authorizeURL
-{
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:@"web_server", @"type", kClientID, @"client_id", kRedirectPath, @"redirect_uri", nil];
-    NSString *string = [NSString addQueryStringToUrlString:[NSString stringWithFormat:@"%@/new", kBasecampAuthorizationURL] withDictionary:dictionary];
-    NSURL *url = [NSURL URLWithString:string];
-    return url;
-}
-
-- (BOOL) handleOpenURL:(NSURL *) url
-{
-    if (!url) return NO;
-    
-    NSString *URLString = [url absoluteString];
-    if ([URLString hasPrefix:kRedirectPath]) 
-    {
-        if ([URLString hasPrefix:[NSString stringWithFormat:@"%@?code=", kRedirectPath]]) 
-        {
-            NSString *code = [URLString stringByReplacingOccurrencesOfString:[NSString stringWithFormat:@"%@?code=", kRedirectPath] withString:@""];
-            [self applicationWasAuthorizedWithTemporaryToken:code];
-            
-            if ([self.delegate respondsToSelector:@selector(applicationRecievedTemporaryToken:)])
-                [self.delegate applicationRecievedTemporaryToken:code];
-        }
-        else if ([URLString hasPrefix:[NSString stringWithFormat:@"%@?error=access_denied", kRedirectPath]]) 
-        {
-            if ([self.delegate respondsToSelector:@selector(requestForAccessWasDenied)]) 
-                [self.delegate requestForAccessWasDenied];
-        }
-    }
-    else return NO; 
-        
-    return YES;
-}
-
-- (void) applicationWasAuthorizedWithTemporaryToken:(NSString *)token
-{
-    NSDictionary *parameters = [NSDictionary dictionaryWithObjectsAndKeys:@"web_server", @"type", kClientID, @"client_id", kClientSecret, @"client_secret", kRedirectPath, @"redirect_uri", token, @"code", nil];
-    
-    AFHTTPClient *authorizationClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:kBasecampAuthorizationURL]];
-    [authorizationClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    [authorizationClient setParameterEncoding:AFJSONParameterEncoding];
-    
-    [authorizationClient postPath:@"token" 
-                       parameters:parameters 
-                          success:^(AFHTTPRequestOperation *operation, id responseObject){
-                              self.isAuthorized = YES;
-                              self.accessToken = [responseObject objectForKey:@"access_token"];
-                              self.expirationDate = [NSDate dateWithTimeIntervalSinceNow:[[responseObject objectForKey:@"expires_in"] doubleValue]];
-                              self.refreshToken = [responseObject objectForKey:@"refresh_token"];
-                              
-                              [[NSUserDefaults standardUserDefaults] setBool:self.isAuthorized forKey:kIsAuthorized];
-                              [[NSUserDefaults standardUserDefaults] setObject:self.accessToken forKey:kAccessToken];
-                              [[NSUserDefaults standardUserDefaults] setObject:self.refreshToken forKey:kRefreshToken];
-                              [[NSUserDefaults standardUserDefaults] setObject:self.expirationDate forKey:kExpirationDate];
-                              [[NSUserDefaults standardUserDefaults] synchronize];
-                              
-                              [self setAuthorizationHeaderWithToken:self.accessToken];
-
-                              if ([self.delegate respondsToSelector:@selector(applicationWasAuthorizedWithAccessToken:expirationDate:andRefreshToken:)]) 
-                                  [self.delegate applicationWasAuthorizedWithAccessToken:self.accessToken 
-                                                                          expirationDate:self.expirationDate 
-                                                                         andRefreshToken:self.refreshToken];
-
-                              [self getAccountIDWithAccessToken:self.accessToken];
-                          }
-                          failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                              if ([self.delegate respondsToSelector:@selector(applicationFailedToAuthorizeWithError:)]) 
-                                  [self.delegate applicationFailedToAuthorizeWithError:error];
-                          }];
-}
-
-- (void) getAccountIDWithAccessToken:(NSString *)token
-{
-    AFHTTPClient *accountClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:@"https://launchpad.37signals.com/authorization.json"]];
-    [accountClient registerHTTPOperationClass:[AFJSONRequestOperation class]];
-    [accountClient setDefaultHeader:@"Content-Type" value:@"application/json"];
-    [accountClient setDefaultHeader:@"User-Agent" value:@"Bonfire (petit.scott@gmail.com)"];
-    [accountClient setAuthorizationHeaderWithToken:token];
-    
-    [accountClient getPath:@"" 
-                parameters:nil 
-                   success:^(AFHTTPRequestOperation *operation, id JSON){                       
-                       NSArray *accounts = [JSON objectForKey:@"accounts"];
-                       
-                       for (NSDictionary *accountsDict in accounts) 
-                       {
-                           if ([[accountsDict objectForKey:@"product"] isEqualToString:@"bcx"]) 
-                           { 
-                               self.accountID = [accountsDict objectForKey:@"id"];
-                               self.account = [accountsDict mutableCopy];
-                               
-                               [[NSUserDefaults standardUserDefaults] setObject:self.accountID forKey:kAccountID];
-                               [[NSUserDefaults standardUserDefaults] synchronize];
-                               
-                               if ([self.delegate respondsToSelector:@selector(account:wasAuthorizedWithAccessToken:)]) 
-                                   [self.delegate account:self.account wasAuthorizedWithAccessToken:token];  
-                           }
-                       }
-                   }failure:^(AFHTTPRequestOperation *operation, NSError *error){
-                       NSLog(@"Failure with Error %@", error);
-                   }];
-    
-}
-
 #pragma mark - Projects
 
-- (void) getProjectsWithParameters:(NSMutableDictionary *)parameters
+- (void)getProjectsWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects.json", self.accountID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {              
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
               NSMutableArray *projects = [NSMutableArray array];
               
-              for (NSMutableDictionary *dictionary in JSON) 
+              for (NSMutableDictionary *dictionary in responseObject)
               {
-                  BCProject *project = [[BCProject alloc] initWithDictionary:dictionary];
+                  BCProject *project = [BCProject objectWithDictionary:dictionary];
                   [projects addObject:project];
-              } 
-
-              if ([self.delegate respondsToSelector:@selector(didReturnProjects:withOperation:)])
-                  [self.delegate didReturnProjects:projects withOperation:operation];
+              }
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, projects);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
-              NSLog(@"Error = %@, for operation = %@", error, operation);
+              if (failure)
+              {
+                  failure((AFJSONRequestOperation *)operation, error);
+              }
           }];
 }
 
-- (void) getProjectForID:(NSString *) projectID andParameters:(NSMutableDictionary *) parameters
+- (void)getProjectForID:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {    
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {                         
-              BCProject *project = [[BCProject alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              if ([self.delegate respondsToSelector:@selector(didReturnProject:withOperation:)])
-                  [self.delegate didReturnProject:project withOperation:operation];
+              BCProject *project = [BCProject objectWithDictionary:responseObject];
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, project);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -215,69 +103,75 @@
 
 #pragma mark - Todo Lists
 
-- (void) getTodoListsForProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters
+- (void)getTodoListsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {              
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {              
+
               NSMutableArray *lists = [NSMutableArray array];
               
-              for (NSMutableDictionary *listsDictionary in JSON) 
+              for (NSMutableDictionary *listsDictionary in responseObject) 
               {
-                  BCTodoList *list = [[BCTodoList alloc] initWithDictionary:listsDictionary];
+                  BCTodoList *list = [BCTodoList objectWithDictionary:listsDictionary];
                   [lists addObject:list];
               }
-            
-              if ([self.delegate respondsToSelector:@selector(didReturnTodoLists:withOperation:)])
-                  [self.delegate didReturnTodoLists:lists withOperation:operation];
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, lists);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
     
 }
 
-- (void) getAssignedTodoListsForPerson:(NSString *)personID WithParameters:(NSMutableDictionary *)parameters
+- (void)getAssignedTodoListsForPerson:(NSString *)personID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/people/%@/assigned_todos.json", self.accountID, personID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {              
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
               NSMutableArray *lists = [NSMutableArray array];
               
-              for (NSMutableDictionary *dictionary in JSON) 
+              for (NSMutableDictionary *dictionary in responseObject) 
               {
-                  BCTodoList *todoList = [[BCTodoList alloc] initWithDictionary:dictionary];
+                  BCTodoList *todoList = [BCTodoList objectWithDictionary:dictionary];
                   [lists addObject:todoList];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnAssignedTodoLists:withOperation:)])
-                  [self.delegate didReturnAssignedTodoLists:lists withOperation:operation];
-              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, lists);
+              }                            
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
 }
 
-- (void) getTodosForTodoList:(NSString *) todoListID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters
+- (void)getTodosForTodoList:(NSString *)todoListID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists/%@.json", self.accountID, projectID, todoListID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
-              BCTodoList *todoList = [[BCTodoList alloc] initWithDictionary:JSON];
-              
-              NSMutableArray *todosArray = [[JSON objectForKey:@"todos"] objectForKey:@"remaining"];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                            
+              NSMutableArray *todosArray = [[responseObject objectForKey:@"todos"] objectForKey:@"remaining"];
               NSMutableArray *todos = [NSMutableArray array];
               
               for (NSMutableDictionary *todosDict in todosArray) 
               {
-                  BCTodo *todo = [[BCTodo alloc] initWithDictionary:todosDict];
+                  BCTodo *todo = [BCTodo objectWithDictionary:todosDict];
                   [todos addObject:todo];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnTodos:forTodoList:withOperation:)])
-                  [self.delegate didReturnTodos:todos forTodoList:todoList withOperation:operation];
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, todos);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -285,16 +179,19 @@
 
 #pragma mark - Todos
 
-- (void)getTodo:(NSString *)todoID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters
+- (void)getTodo:(NSString *)todoID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todos/%@.json", self.accountID, projectID, todoID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {                            
-              BCTodo *todo = [[BCTodo alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              if ([self.delegate respondsToSelector:@selector(didReturnTodo:withOperation:)])
-                  [self.delegate didReturnTodo:todo withOperation:operation];
+              BCTodo *todo = [BCTodo objectWithDictionary:responseObject];
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, todo);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -302,38 +199,43 @@
 
 #pragma mark - Documents
 
-- (void) getDocumentsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters
+- (void)getDocumentsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/documents.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {                            
-              NSMutableArray *documents = [[NSMutableArray alloc] init];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              for (NSMutableDictionary *documentsDict in JSON) 
+              NSMutableArray *documents = [NSMutableArray array];
+              
+              for (NSMutableDictionary *documentsDict in responseObject) 
               {
-                  BCDocument *document = [[BCDocument alloc] initWithDictionary:documentsDict];
+                  BCDocument *document = [BCDocument objectWithDictionary:documentsDict];
                   [documents addObject:document];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnDocuments:withOperation:)])
-                  [self.delegate didReturnDocuments:documents withOperation:operation];
-              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, documents);
+              }              
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
 }
 
-- (void) getDocumentWithID:(NSString *) documentID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters
+- (void)getDocumentWithID:(NSString *)documentID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/documents/%@.json", self.accountID, projectID, documentID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {             
-              BCDocument *document = [[BCDocument alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
+              BCDocument *document = [BCDocument objectWithDictionary:responseObject];
             
-              if ([self.delegate respondsToSelector:@selector(didReturnDocument:withOperation:)])
-                  [self.delegate didReturnDocument:document withOperation:operation];
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, document);
+              }        
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -341,51 +243,56 @@
 
 #pragma mark - Calendar Events
 
-- (void) getUpcomingCalendarEventsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters
+- (void)getUpcomingCalendarEventsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/calendar_events.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
               NSMutableArray *calendarEvents = [NSMutableArray array];
               
-              for (NSMutableDictionary *calendarEventsDict in JSON) 
+              for (NSMutableDictionary *calendarEventsDict in responseObject) 
               {
-                  BCCalendarEvent *event = [[BCCalendarEvent alloc] initWithDictionary:calendarEventsDict];
+                  BCCalendarEvent *event = [BCCalendarEvent objectWithDictionary:calendarEventsDict];
                   [calendarEvents addObject:event];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnUpcomingCalendarEvents:withOperation:)])
-                  [self.delegate didReturnUpcomingCalendarEvents:calendarEvents withOperation:operation];
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, calendarEvents);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
 }
 
-- (void) getPastCalendarEventsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters
+- (void)getPastCalendarEventsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/calendar_events/past.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {              
-              NSLog(@"JSON = %@", JSON);
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {              
+              NSLog(@"JSON = %@", responseObject);
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
               NSLog(@"Error = %@", error);              
           }];
 }
 
-- (void) getCalendarEventwithID:(NSString *) calendarEventID forProject:(NSString *) projectID withParamaters:(NSMutableDictionary *) parameters
+- (void)getCalendarEventwithID:(NSString *)calendarEventID forProject:(NSString *)projectID withParamaters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/calendar_events/%@.json", self.accountID, projectID, calendarEventID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {      
-              BCCalendarEvent *calendarEvent = [[BCCalendarEvent alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              if ([self.delegate respondsToSelector:@selector(didReturnCalendarEvent:withOperation:)])
-                  [self.delegate didReturnCalendarEvent:calendarEvent withOperation:operation];
-
+              BCCalendarEvent *calendarEvent = [BCCalendarEvent objectWithDictionary:responseObject];
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, calendarEvent);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -394,25 +301,19 @@
 
 #pragma mark - People
 
-- (void) getPersonWithID:(NSString *)personID andParameters:(NSMutableDictionary *)parameters
+- (void)getPersonWithID:(NSString *)personID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/people/%@.json", self.accountID, personID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {  
-              BCPerson *person = [[BCPerson alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              if ([self.people containsObject:person]) 
-                  [self.people replaceObjectAtIndex:[self.people indexOfObject:person] withObject:person];
-              else
-                  [self.people addObject:person];
-              
-              if ([personID isEqualToString:@"me"]) 
-                  self.me = person;
-              
-                  
-              if ([self.delegate respondsToSelector:@selector(didReturnPerson:withOperation:)])
-                  [self.delegate didReturnPerson:person withOperation:operation];
+              BCPerson *person = [BCPerson objectWithDictionary:responseObject];
+
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, person);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){              
           }];
@@ -420,24 +321,27 @@
 
 #pragma mark - Events
 
-- (void) getEventsForProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters
+- (void)getEventsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/events.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
               NSMutableArray *events = [NSMutableArray array];
               
-              NSArray *jsonArray = JSON;
+              NSArray *jsonArray = responseObject;
               
               for (NSMutableDictionary *dictionary in jsonArray) 
               {
-                  BCEvent *event = [[BCEvent alloc] initWithDictionary:dictionary];
+                  BCEvent *event = [BCEvent objectWithDictionary:dictionary];
                   [events addObject:event];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnEvents:withOperation:)])
-                  [self.delegate didReturnEvents:events withOperation:operation];
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, events);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -445,39 +349,45 @@
 
 #pragma mark - Files
 
-- (void) getAttachmentsForProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters
+- (void)getAttachmentsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/attachments.json", self.accountID, projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
               NSMutableArray *attachments = [NSMutableArray array];
               
-              NSArray *jsonArray = JSON;
+              NSArray *jsonArray = responseObject;
               
               for (NSMutableDictionary *dictionary in jsonArray) 
               {
-                  BCAttachment *attachment = [[BCAttachment alloc] initWithDictionary:dictionary];
+                  BCAttachment *attachment = [BCAttachment objectWithDictionary:dictionary];
                   [attachments addObject:attachment];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnAttachments:withOperation:)])
-                  [self.delegate didReturnAttachments:attachments withOperation:operation];
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, attachments);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
 }
 
-- (void) getUploadWithID:(NSString *)uploadID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters
+- (void)getUploadWithID:(NSString *)uploadID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/uploads/%@.json", self.accountID, projectID, uploadID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
-              BCUpload *upload = [[BCUpload alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              if ([self.delegate respondsToSelector:@selector(didReturnUpload:withOperation:)])
-                  [self.delegate didReturnUpload:upload withOperation:operation];
+              BCUpload *upload = [BCUpload objectWithDictionary:responseObject];
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, upload);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -485,22 +395,25 @@
 
 #pragma mark - Topics
 
-- (void) getTopicsForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)getTopicsForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/topics.json", self.accountID, project.projectID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
               NSMutableArray *topics = [NSMutableArray array];
               
-              for (NSMutableDictionary *topicsDict in JSON) 
+              for (NSMutableDictionary *topicsDict in responseObject) 
               {
-                  BCTopic *topic = [[BCTopic alloc] initWithDictionary:topicsDict];
+                  BCTopic *topic = [BCTopic objectWithDictionary:topicsDict];
                   [topics addObject:topic];
               }
               
-              if ([self.delegate respondsToSelector:@selector(didReturnTopics:withOperation:)])
-                  [self.delegate didReturnTopics:topics withOperation:operation];
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, topics);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -508,16 +421,19 @@
 
 #pragma mark - Messages
 
-- (void) getMessage:(NSString *)messageID forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)getMessage:(NSString *)messageID forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/messages/%@.json", self.accountID, project.projectID, messageID];
     [self getPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON) {
-              BCMessage *message = [[BCMessage alloc] initWithDictionary:JSON];
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
               
-              if ([self.delegate respondsToSelector:@selector(didReturnMessage:withOperation:)])
-                  [self.delegate didReturnMessage:message withOperation:operation];
+              BCMessage *message = [BCMessage objectWithDictionary:responseObject];
+              
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, message);
+              }
           }
           failure:^(AFHTTPRequestOperation *operation, NSError *error){
           }];
@@ -527,50 +443,59 @@
 
 #pragma mark - Projects
 
-- (void) createProjectWithParameters:(NSMutableDictionary *) parameters
+- (void)createProjectWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects.json", self.accountID];
     
     [self postPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON){
-               BCProject *project = [[BCProject alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               if ([self.delegate respondsToSelector:@selector(didReturnProject:withOperation:)])
-                   [self.delegate didReturnProject:project withOperation:operation];
+               BCProject *project = [BCProject objectWithDictionary:responseObject];
+               
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, project);
+               }
            }failure:^(AFHTTPRequestOperation *operation, NSError *error){
            }];
 }
 
 #pragma mark - Todo Lists
 
-- (void) createTodoListForProject:(BCProject *)project withParameters:(NSMutableDictionary *) parameters
+- (void)createTodoListForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists.json", self.accountID, project.projectID];
     
     [self postPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON) {
-               BCTodoList *list = [[BCTodoList alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject) {
                
-               if ([self.delegate respondsToSelector:@selector(didReturnTodoList:withOperation:)])
-                   [self.delegate didReturnTodoList:list withOperation:operation];
+               BCTodoList *list = [BCTodoList objectWithDictionary:responseObject];
+               
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, list);
+               }
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error){
            }];
 }
 
-- (void) updateTodoList:(BCTodoList *)list forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)updateTodoList:(BCTodoList *)list forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists/%@.json", self.accountID, project.projectID, list.todoListID];
     
     [self putPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON){
-              NSLog(@"json = %@", JSON);
+          success:^(AFHTTPRequestOperation *operation, id responseObject){
               
-            //TodoList *list = [[TodoList alloc] initWithDictionary:JSON];
+              BCTodoList *list = [BCTodoList objectWithDictionary:responseObject];
               
+              if (success)
+              {
+                  success((AFJSONRequestOperation *)operation, list);
+              }
           }failure:^(AFHTTPRequestOperation *operation, NSError *error){
               NSLog(@"Error = %@", error); 
           }];
@@ -578,35 +503,40 @@
 
 #pragma mark - Todos
 
-- (void) createTodoForTodoList:(BCTodoList *)todoList forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)createTodoForTodoList:(BCTodoList *)todoList forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todolists/%@/todos.json", self.accountID, project.projectID, todoList.todoListID];
     
     [self postPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON) {
-               BCTodo *todo = [[BCTodo alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject) {
                
-               if ([self.delegate respondsToSelector:@selector(didReturnTodo:withOperation:)])
-                   [self.delegate didReturnTodo:todo withOperation:operation];
+               BCTodo *todo = [BCTodo objectWithDictionary:responseObject];
+               
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, todo);
+               }
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error){
                NSLog(@"Error = %@", error);
            }];
 }
 
-- (void) updateTodo:(BCTodo *)todo forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)updateTodo:(BCTodo *)todo forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {    
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/todos/%@.json", self.accountID, project.projectID, todo.todoID];
     
     [self putPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON){
-               BCTodo *todo = [[BCTodo alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               if ([self.delegate respondsToSelector:@selector(didReturnTodo:withOperation:)])
-                   [self.delegate didReturnTodo:todo withOperation:operation];
+               BCTodo *todo = [BCTodo objectWithDictionary:responseObject];
                
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, todo);
+               }
            }failure:^(AFHTTPRequestOperation *operation, NSError *error){
                NSLog(@"Error = %@", error); 
            }];
@@ -614,16 +544,19 @@
 
 #pragma mark - Documents
 
-- (void) createDocumentForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)createDocumentForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/documents.json", self.accountID, project.projectID];
     [self postPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON){
-                BCDocument *document = [[BCDocument alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               if ([self.delegate respondsToSelector:@selector(didReturnDocument:withOperation:)])
-                   [self.delegate didReturnDocument:document withOperation:operation];
+               BCDocument *document = [BCDocument objectWithDictionary:responseObject];
+               
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, document);
+               }
            }failure:^(AFHTTPRequestOperation *operation, NSError *error){
                NSLog(@"Error = %@", error);
            }];
@@ -631,29 +564,29 @@
 
 #pragma mark - Calendar Events
 
-- (void) createCalendarEventForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)createCalendarEventForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/calendar_events.json", self.accountID, project.projectID];
     [self postPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON){
-               NSLog(@"JSON = %@", JSON);      
+           success:^(AFHTTPRequestOperation *operation, id responseObject){
+               NSLog(@"JSON = %@", responseObject);      
            }failure:^(AFHTTPRequestOperation *operation, NSError *error){
                NSLog(@"Error = %@", error);
            }];
 }
 
-- (void) updateCalendarEvent:(BCCalendarEvent *)calendarEvent forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)updateCalendarEvent:(BCCalendarEvent *)calendarEvent forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
     NSString *path = [NSString stringWithFormat:@"%@/api/v1/projects/%@/calendar_events/%@.json", self.accountID, project.projectID, calendarEvent.calendarEventID];
     [self putPath:path 
        parameters:parameters 
-          success:^(AFHTTPRequestOperation *operation, id JSON){
-              NSLog(@"JSON = %@", JSON);
+          success:^(AFHTTPRequestOperation *operation, id responseObject){
+              NSLog(@"JSON = %@", responseObject);
           }failure:^(AFHTTPRequestOperation *operation, NSError *error){
               NSLog(@"Error = %@", error);
           }];
@@ -661,7 +594,7 @@
 
 #pragma mark - Comments
 
-- (void) createCommentForSection:(NSString *)section withIdentifier:(NSString *)sectionID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters
+- (void)createCommentForSection:(NSString *)section withIdentifier:(NSString *)sectionID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     
@@ -669,11 +602,14 @@
     
     [self postPath:path 
         parameters:parameters 
-           success:^(AFHTTPRequestOperation *operation, id JSON){
-               BCComment *comment = [[BCComment alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               if ([self.delegate respondsToSelector:@selector(didReturnComment:withOperation:)])
-                   [self.delegate didReturnComment:comment withOperation:operation];
+               BCComment *comment = [BCComment objectWithDictionary:responseObject];
+               
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, comment);
+               }
            }
            failure:^(AFHTTPRequestOperation *operation, NSError *error){
                NSLog(@"Error = %@", error);
@@ -682,7 +618,7 @@
 
 #pragma mark - Messages
 
-- (void) createMessageForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters
+- (void)createMessageForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure
 {
     NSLog(@"Creating a Message");
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
@@ -691,71 +627,17 @@
     
     [self postPath:path
         parameters:parameters
-           success:^(AFHTTPRequestOperation *operation, id JSON){
-               BCMessage *message = [[BCMessage alloc] initWithDictionary:JSON];
+           success:^(AFHTTPRequestOperation *operation, id responseObject){
                
-               if ([self.delegate respondsToSelector:@selector(didReturnMessage:withOperation:)])
-                   [self.delegate didReturnMessage:message withOperation:operation];
+               BCMessage *message = [BCMessage objectWithDictionary:responseObject];
+               
+               if (success)
+               {
+                   success((AFJSONRequestOperation *)operation, message);
+               }
            }failure:^(AFHTTPRequestOperation *operation, NSError *error){
                NSLog(@"Error = %@", error);
            }];
-}
-
-#pragma mark - Getter Methods/Lazy Instantiation
-
-- (NSString *) accessToken
-{
-    if (!_accessToken) _accessToken = [[NSUserDefaults standardUserDefaults] objectForKey:kAccessToken];
-    return _accessToken;
-}
-
-- (NSString *) refreshToken
-{
-    if (!_refreshToken) _refreshToken = [[NSUserDefaults standardUserDefaults] objectForKey:kRefreshToken];
-    return _refreshToken;
-}
-
-- (BOOL) isExpired
-{
-    if (!self.expirationDate)
-        self.expirationDate = [[NSUserDefaults standardUserDefaults] objectForKey:kExpirationDate];
-    
-    NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDate *date = [NSDate date];
-    NSDateComponents *comps = [cal components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit)
-                                     fromDate:date];
-    NSDate *today = [cal dateFromComponents:comps];
-    NSDateComponents *components = [[NSDateComponents alloc] init];
-    [components setDay:-1];
-    NSDate *yesterday = [cal dateByAddingComponents:components toDate:today options:0];
-    
-    if ([self.expirationDate compare:yesterday] == NSOrderedDescending)
-        return NO;
-    else 
-    {
-        self.isAuthorized = NO;
-        [[NSUserDefaults standardUserDefaults] setBool:self.isAuthorized forKey:kIsAuthorized];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return YES;
-    }
-}
-
-- (BOOL) isAuthorized
-{
-    if (!_isAuthorized) _isAuthorized = [[NSUserDefaults standardUserDefaults] boolForKey:kIsAuthorized];
-    return _isAuthorized;
-}
-
-- (NSString *) accountID
-{
-    if (!_accountID) _accountID = [[NSUserDefaults standardUserDefaults] objectForKey:kAccountID];
-    return _accountID;
-}
-
-- (NSMutableArray *) people
-{
-    if (!_people) _people = [[NSMutableArray alloc] init];
-    return _people;
 }
 
 @end

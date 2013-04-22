@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "AFNetworking.h"
 
 @class BCProject;
@@ -19,146 +18,77 @@
 @class BCComment;
 @class BCMessage;
 
-@protocol BasecampDelegate <NSObject>
-
-@optional
-- (void) applicationRecievedTemporaryToken:(NSString *) token;
-- (void) requestForAccessWasDenied;
-- (void) applicationWasAuthorizedWithAccessToken:(NSString *) accessToken 
-                                  expirationDate:(NSDate *) expiration 
-                                 andRefreshToken:(NSString *) refreshToken;
-- (void) applicationFailedToAuthorizeWithError:(NSError *) error;
-- (void) account:(NSMutableDictionary *) account wasAuthorizedWithAccessToken:(NSString *) accessToken;
-
-//Failure
-- (void) failedToReturnObjectWithOperation:(AFHTTPRequestOperation *) operation error:(NSError *) error;
-
-//Projects
-- (void) didReturnProjects:(NSMutableArray *) projects withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnProject:(BCProject *) project withOperation:(AFHTTPRequestOperation *) operation;
-
-//Todo Lists
-- (void) didReturnTodoLists:(NSMutableArray *) lists withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnAssignedTodoLists:(NSMutableArray *) lists withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnTodos:(NSMutableArray *) todos forTodoList:(BCTodoList *) list withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnTodoList:(BCTodoList *) list withOperation:(AFHTTPRequestOperation *) operation;
-
-//Todos
-- (void) didReturnTodo:(BCTodo *) todo withOperation:(AFHTTPRequestOperation *) operation;
-
-//Documents
-- (void) didReturnDocuments:(NSMutableArray *) documents withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnDocument:(BCDocument *) document withOperation:(AFHTTPRequestOperation *) operation;
-
-//Calendar Events
-- (void) didReturnUpcomingCalendarEvents:(NSMutableArray *) calendarEvents withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnPastCalendarEvents:(NSMutableArray *) calendarEvents withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnCalendarEvent:(BCCalendarEvent *) calandarEvent withOperation:(AFHTTPRequestOperation *) operation;
-
-//People
-- (void) didReturnPerson:(BCPerson *) person withOperation:(AFHTTPRequestOperation *) operation;
-
-//Events
-- (void) didReturnEvents:(NSMutableArray *) events withOperation:(AFHTTPRequestOperation *) operation;
-
-//Files
-- (void) didReturnAttachments:(NSMutableArray *) attachments withOperation:(AFHTTPRequestOperation *) operation;
-- (void) didReturnUpload:(BCUpload *) upload withOperation:(AFHTTPRequestOperation *) operation;
-
-//Comment
-- (void) didReturnComment:(BCComment *) comment withOperation:(AFHTTPRequestOperation *) operation;
-
-//Topics
-- (void) didReturnTopics:(NSMutableArray *) topics withOperation:(AFHTTPRequestOperation *) operation;
-
-//Messages
-- (void) didReturnMessage:(BCMessage *) message withOperation:(AFHTTPRequestOperation *) operation;
-
-@end
+typedef void (^BKHTTPClientSuccess)(AFJSONRequestOperation *operation, id responseObject);
+typedef void (^BKHTTPClientFailure)(AFJSONRequestOperation *operation, NSError *error);
 
 @interface Basecamp : AFHTTPClient
 
-+ (id) sharedCamp;
++ (instancetype)sharedCampWithAccountId:(NSString *)accountId;
 
-@property (nonatomic, strong) NSObject <BasecampDelegate> *delegate;
-@property (nonatomic) BOOL isAuthorized;
-@property (nonatomic) BOOL isExpired;
-@property (nonatomic, strong) NSString *accessToken;
-@property (nonatomic, strong) NSDate *expirationDate;
-@property (nonatomic, strong) NSString *refreshToken;
-@property (nonatomic, strong) NSString *accountID;
-@property (nonatomic, strong) NSMutableDictionary *account;
-
-@property (nonatomic, strong) NSMutableArray *people;
+@property (nonatomic, readonly) NSString *accountID;
 @property (nonatomic, strong) BCPerson *me;
 
-//Authorization
-- (NSURL *) authorizeURL;
-- (BOOL) handleOpenURL:(NSURL *) url;
-- (void) applicationWasAuthorizedWithTemporaryToken:(NSString *) token;
-- (void) getAccountIDWithAccessToken:(NSString *) token;
-
 //Projects
-- (void) getProjectsWithParameters:(NSMutableDictionary *) parameters;
-- (void) getProjectForID:(NSString *) projectID andParameters:(NSMutableDictionary *) parameters;
+- (void)getProjectsWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getProjectForID:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Todo lists
-- (void) getTodoListsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
-- (void) getTodosForTodoList:(NSString *) todoListID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
-- (void) getAssignedTodoListsForPerson:(NSString *) personID WithParameters:(NSMutableDictionary *) parameters;
+- (void)getTodoListsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getTodosForTodoList:(NSString *)todoListID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getAssignedTodoListsForPerson:(NSString *)personID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Todos
-- (void) getTodo:(NSString *) todoID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
+- (void)getTodo:(NSString *)todoID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Documents
-- (void) getDocumentsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
-- (void) getDocumentWithID:(NSString *) documentID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
+- (void)getDocumentsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getDocumentWithID:(NSString *)documentID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Calendar Events
-- (void) getUpcomingCalendarEventsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
-- (void) getPastCalendarEventsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
-- (void) getCalendarEventwithID:(NSString *) calendarEventID forProject:(NSString *) projectID withParamaters:(NSMutableDictionary *) parameters;
+- (void)getUpcomingCalendarEventsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getPastCalendarEventsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getCalendarEventwithID:(NSString *)calendarEventID forProject:(NSString *)projectID withParamaters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //People
-- (void) getPersonWithID:(NSString *) personID andParameters:(NSMutableDictionary *) parameters;
+- (void)getPersonWithID:(NSString *)personID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Events
-- (void) getEventsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
+- (void)getEventsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Files
-- (void) getAttachmentsForProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
-- (void) getUploadWithID:(NSString *) uploadID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
+- (void)getAttachmentsForProject:(NSString *)projectID parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)getUploadWithID:(NSString *)uploadID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Topics
-- (void) getTopicsForProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)getTopicsForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Messages
-- (void) getMessage:(NSString *) messageID forProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)getMessage:(NSString *)messageID forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 #pragma mark - Creation/Updating
 
 //Projects
-- (void) createProjectWithParameters:(NSMutableDictionary *) parameters;
+- (void)createProjectWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //TodoLists
-- (void) createTodoListForProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
-- (void) updateTodoList:(BCTodoList *) list forProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)createTodoListForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)updateTodoList:(BCTodoList *)list forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Todos
-- (void) createTodoForTodoList:(BCTodoList *) todoList forProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
-- (void) updateTodo:(BCTodo *) todo forProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)createTodoForTodoList:(BCTodoList *)todoList forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)updateTodo:(BCTodo *)todo forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Documents
-- (void) createDocumentForProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)createDocumentForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Calendar Events
-- (void) createCalendarEventForProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
-- (void) updateCalendarEvent:(BCCalendarEvent *) calendarEvent forProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)createCalendarEventForProject:(BCProject *)project parameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
+- (void)updateCalendarEvent:(BCCalendarEvent *)calendarEvent forProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Comments
-- (void) createCommentForSection:(NSString *) section withIdentifier:(NSString *) sectionID forProject:(NSString *) projectID withParameters:(NSMutableDictionary *) parameters;
+- (void)createCommentForSection:(NSString *)section withIdentifier:(NSString *)sectionID forProject:(NSString *)projectID withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 //Messages
-- (void) createMessageForProject:(BCProject *) project withParameters:(NSMutableDictionary *) parameters;
+- (void)createMessageForProject:(BCProject *)project withParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
 
 @end
