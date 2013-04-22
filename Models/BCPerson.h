@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCPerson : NSObject
+@interface BCPerson : BKObject
 
 @property (nonatomic, strong) NSString *avatarURL;
 @property (nonatomic, strong) NSDate *createdDate;
@@ -18,8 +18,5 @@
 @property (nonatomic, strong) NSString *lastUpdated;
 @property (nonatomic) int assignedTodosCount;
 @property (nonatomic) int eventsCount;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
-- (id) initPersonWithID:(NSString *) personID;
 
 @end

@@ -30,7 +30,6 @@
 @synthesize completerID = _completerID;
 @synthesize completerName = _completerName;
 @synthesize comments = _comments;
-@synthesize height = _height;
 
 - (id) initWithDictionary:(NSMutableDictionary *)dictionary
 {
@@ -61,19 +60,6 @@
             BCComment *comment = [[BCComment alloc] initWithDictionary:commentsDictionary];
             [self.comments addObject:comment];
         }
-                
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"yyyy-MM-dd"];
-                
-        if ([dictionary objectForKey:@"due_at"] != [NSNull null])
-        {
-            self.dueDate = [formatter dateFromString:[dictionary objectForKey:@"due_at"]];
-        }
-        
-        CGSize maxSize = CGSizeMake(250, 999);
-        CGSize stringSize = [self.content sizeWithFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:18] constrainedToSize:maxSize lineBreakMode:UILineBreakModeWordWrap];
-        
-        self.height = stringSize.height;
     }
     
     return self;
@@ -92,7 +78,10 @@
 
 - (NSMutableArray *) comments
 {
-    if (!_comments) _comments = [[NSMutableArray alloc] init];
+    if (!_comments)
+    {
+        _comments = [[NSMutableArray alloc] init];
+    }
     return _comments;
 }
 

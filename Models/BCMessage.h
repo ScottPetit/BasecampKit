@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCMessage : NSObject
+@interface BCMessage : BKObject
 
 @property (nonatomic, strong) NSString *messageID;
 @property (nonatomic, strong) NSString *subject;
@@ -18,7 +18,5 @@
 @property (nonatomic, strong) NSString *creatorID;
 @property (nonatomic, strong) NSString *creatorName;
 @property (nonatomic, strong) NSMutableArray *comments;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

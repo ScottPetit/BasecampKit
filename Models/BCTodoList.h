@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCTodoList : NSObject
+@interface BCTodoList : BKObject
 
 @property (nonatomic, strong) NSString *todoListID;
 @property (nonatomic, strong) NSString *name;
@@ -21,7 +21,5 @@
 
 @property (nonatomic, strong) NSString *projectID;
 @property (nonatomic) int assignedTodosCount;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

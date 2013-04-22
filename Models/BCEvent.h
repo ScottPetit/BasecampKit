@@ -6,20 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-typedef enum 
-{
-   	EventTypeProject = 0,
-    EventTypeTodo,
-    EventTypeTodoList,
-    EventTypeDocument,
-    EventTypeMessage,
-    EventTypeUpload,
-    EventTypeCalendarEvent,
-} EventType;
-
-@interface BCEvent : NSObject
+@interface BCEvent : BKObject
 
 @property (nonatomic, strong) NSString *eventID;
 @property (nonatomic, strong) NSString *creatorID;
@@ -30,14 +19,8 @@ typedef enum
 @property (nonatomic, strong) NSDate *updatedDate;
 @property (nonatomic, strong) NSString *action;
 @property (nonatomic, strong) NSString *task;
-@property (nonatomic, strong) NSMutableAttributedString *fullDescription;
-@property (nonatomic) EventType type;
 @property (nonatomic, strong) NSString *typeID;
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) NSString *creatorImageURL;
-@property (nonatomic) float height;
-@property (nonatomic, strong) UIColor *color;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

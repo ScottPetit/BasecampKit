@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCComment : NSObject
+@interface BCComment : BKObject
 
 @property (nonatomic, strong) NSString *commentID;
 @property (nonatomic, strong) NSString *content;
@@ -17,9 +17,5 @@
 @property (nonatomic, strong) NSString *creatorID;
 @property (nonatomic, strong) NSString *creatorName;
 @property (nonatomic, strong) NSString *creatorImageURL;
-@property (nonatomic, strong) NSMutableAttributedString *fullDescription;
-@property (nonatomic) CGFloat height;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

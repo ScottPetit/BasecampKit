@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCCalendarEvent : NSObject
+@interface BCCalendarEvent : BKObject
 
 @property (nonatomic, strong) NSString *calendarEventID;
 @property (nonatomic, strong) NSString *summary;
@@ -22,7 +22,5 @@
 @property (nonatomic, strong) NSString *creatorName;
 @property (nonatomic, strong) NSString *url;
 @property (nonatomic, strong) NSMutableArray *comments;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

@@ -35,15 +35,7 @@
         self.url = [dictionary objectForKey:@"url"];
         self.position = [[dictionary objectForKey:@"position"] intValue];
         self.completed = [[dictionary objectForKey:@"completed"] boolValue];
-        
-        if ([self.url hasPrefix:[NSString stringWithFormat:@"https://basecamp.com/%@/api/v1/projects/", [[Basecamp sharedCamp] accountID]]]) 
-        {
-            NSString *prefix = [NSString stringWithFormat:@"https://basecamp.com/%@/api/v1/projects/", [[Basecamp sharedCamp] accountID]];
-            NSString *shortenedURL = [self.url stringByReplacingOccurrencesOfString:prefix withString:@""];
-            NSArray *array = [shortenedURL componentsSeparatedByString:@"-"];
-            self.projectID = [array objectAtIndex:0];
-        }
-        
+                
         if ([dictionary objectForKey:@"description"] != [NSNull null]) 
             self.description = [dictionary objectForKey:@"description"];
         

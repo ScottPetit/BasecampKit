@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCTodo : NSObject
+@interface BCTodo : BKObject
 
 @property (nonatomic, strong) NSString *todoID;
 @property (nonatomic, strong) NSString *todoListID;
@@ -28,8 +28,6 @@
 @property (nonatomic, strong) NSString *completerID;
 @property (nonatomic, strong) NSString *completerName;
 @property (nonatomic, strong) NSMutableArray *comments;
-@property (nonatomic) float height;
 
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

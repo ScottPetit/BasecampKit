@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCAttachment : NSObject
+@interface BCAttachment : BKObject
 
 @property (nonatomic, strong) NSString *key;
 @property (nonatomic, strong) NSString *name;

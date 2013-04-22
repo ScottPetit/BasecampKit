@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCProject : NSObject
+@interface BCProject : BKObject
 
 @property (nonatomic, strong) NSString *projectID;
 @property (nonatomic, strong) NSString *name;
@@ -21,7 +21,5 @@
 @property (nonatomic) int documentsCount;
 @property (nonatomic) int todoListsCount;
 @property (nonatomic) int topicsCount;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

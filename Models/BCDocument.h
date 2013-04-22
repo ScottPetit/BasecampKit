@@ -6,9 +6,9 @@
 //  Copyright (c) 2012 Squishy Peach Creative. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "BKObject.h"
 
-@interface BCDocument : NSObject
+@interface BCDocument : BKObject
 
 @property (nonatomic, strong) NSString *documentID;
 @property (nonatomic, strong) NSString *title;
@@ -18,7 +18,5 @@
 @property (nonatomic, strong) NSString *updaterID;
 @property (nonatomic, strong) NSString *updaterName;
 @property (nonatomic, strong) NSMutableArray *comments;
-
-- (id) initWithDictionary:(NSMutableDictionary *) dictionary;
 
 @end

@@ -43,23 +43,23 @@
         
         if ([typeString isEqualToString:@"Todo"]) 
         {
-            self.topicType = TopicTypeTodo;
+            self.topicType = BKTopicTypeTodo;
         }
         else if ([typeString isEqualToString:@"Document"]) 
         {
-            self.topicType = TopicTypeDocument;
+            self.topicType = BKTopicTypeDocument;
         }
         else if ([typeString isEqualToString:@"Message"])
         {
-            self.topicType = TopicTypeMessage;
+            self.topicType = BKTopicTypeMessage;
         }
         else if ([typeString isEqualToString:@"Upload"]) 
         {
-            self.topicType = TopicTypeUpload;
+            self.topicType = BKTopicTypeUpload;
         }
         else if ([typeString isEqualToString:@"CalendarEvent"]) 
         {
-            self.topicType = TopicTypeCalendarEvent;
+            self.topicType = BKTopicTypeCalendarEvent;
         }
         else
         {
