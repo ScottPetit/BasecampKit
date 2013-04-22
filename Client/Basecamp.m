@@ -21,19 +21,18 @@
 #import "BKMessage.h"
 #import "NSString+BasecampKit.h"
 
-#define kBasecampBaseURL @"https://basecamp.com/"
-#define kBasecampAuthorizationURL @"https://launchpad.37signals.com/authorization/"
+static NSString * const BasecampBaseURL = @"https://basecamp.com/";
 
 @implementation Basecamp
 
 #pragma mark - Init
 
-+ (instancetype)sharedCampWithAccountId:(NSString *)accountId
++ (instancetype)sharedCamp
 {
     static Basecamp *__sharedCamp;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        __sharedCamp = [[Basecamp alloc] initWithBaseURL:[NSURL URLWithString:kBasecampBaseURL] accountId:accountId];
+        __sharedCamp = [[Basecamp alloc] initWithBaseURL:[NSURL URLWithString:BasecampBaseURL]];
     });
     
     return __sharedCamp;
@@ -47,8 +46,6 @@
         [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
         [self setParameterEncoding:AFJSONParameterEncoding];
         [self setDefaultHeader:@"Content-Type" value:@"application/json; charset=utf-8"];
-        [self setDefaultHeader:@"User-Agent" value:@"Bonfire (petit.scott@gmail.com)"];
-        _accountID = accountId;
     }
     return self;
 }

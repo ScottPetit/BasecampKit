@@ -23,9 +23,9 @@ typedef void (^BKHTTPClientFailure)(AFJSONRequestOperation *operation, NSError *
 
 @interface Basecamp : AFHTTPClient
 
-+ (instancetype)sharedCampWithAccountId:(NSString *)accountId;
++ (instancetype)sharedCamp;
 
-@property (nonatomic, readonly) NSString *accountID;
+@property (nonatomic, copy) NSString *accountID;
 
 //Projects
 - (void)getProjectsWithParameters:(NSMutableDictionary *)parameters success:(BKHTTPClientSuccess)success failure:(BKHTTPClientFailure)failure;
