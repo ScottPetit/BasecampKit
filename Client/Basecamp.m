@@ -38,7 +38,7 @@ static NSString * const BasecampBaseURL = @"https://basecamp.com/";
     return __sharedCamp;
 }
 
-- (id)initWithBaseURL:(NSURL *)url accountId:(NSString *)accountId
+- (id)initWithBaseURL:(NSURL *)url
 {
     self = [super initWithBaseURL:url];
     if (self) 
